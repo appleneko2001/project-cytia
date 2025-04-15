@@ -15,7 +15,7 @@ public class CytiaGame : IDisposable
     private Font _systemFont;
     
     private PerfCounter _perfCounter = new ();
-    private PlayfieldScreen? _playfieldScreen;
+    private PlayAreaScreen? _playfieldScreen;
     
     public CytiaGame()
     {
@@ -46,7 +46,7 @@ public class CytiaGame : IDisposable
 
     public void LoadChart(ChartBase chart)
     {
-        var screen = new PlayfieldScreen();
+        var screen = new PlayAreaScreen();
 
         screen.UpdateViewSize(viewW, viewH);
         screen.UseChart(chart);

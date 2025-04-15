@@ -9,7 +9,7 @@ using NanoVG;
 
 namespace CytiaPrototype.Screens.Playfield;
 
-public class PlayfieldScreen : UIElementBase, IDisposable
+public class PlayAreaScreen : UIElementBase, IDisposable
 {
     private double _time;
 
@@ -38,6 +38,7 @@ public class PlayfieldScreen : UIElementBase, IDisposable
     private bool _started;
     private bool _introPushed;
     private bool _endOfPages;
+    private bool _scanlineVisible;
 
     private ChartPage? _currentPage;
 
@@ -74,7 +75,7 @@ public class PlayfieldScreen : UIElementBase, IDisposable
                 if (old == null)
                     break;
                 
-                if(old is OutroChartPage)
+                if(!_scanlineVisible)
                     break;
 
                 switch (old.Direction)
@@ -126,6 +127,8 @@ public class PlayfieldScreen : UIElementBase, IDisposable
 
 
     private const int _introFadeInDuration = 1;
+    
+    
 
     private void TryActivePlaySession(double runTime)
     {
@@ -135,11 +138,17 @@ public class PlayfieldScreen : UIElementBase, IDisposable
         if (!_started)
         {
             //_progress.SetStart(_chartPlayStartTimeSpan ?? 0);
-            _progress.SetDuration(_chart?.TotalDuration ?? -1);
+            _progress.SetDuration(GetChartDuration());
 
             _started = true;
             Console.WriteLine("Intro");
         }
+    }
+
+    private double GetChartDuration()
+    {
+        return _chart?.TotalDuration ?? 0;
+        return _chart?.TrimmedDuration ?? 0;
     }
 
     private void TryDoSessionStateUpdate(double srcTime)
@@ -204,18 +213,19 @@ public class PlayfieldScreen : UIElementBase, IDisposable
 
     private void TryGetNextPagePrivate(ChartBase chart, double time, ChartPage? curPage, out ChartPage? page)
     {
-        Console.WriteLine($"Query next page at {TimeSpan.FromSeconds(time)}");
+        //Console.WriteLine($"Query next page at {TimeSpan.FromSeconds(time)}");
         if (chart.TryGetNextPage(time, out page))
         {
+            _endOfPages = false;
             Console.WriteLine($"Returned: {page}");
             return;
         }
-
         if (_endOfPages)
             return;
 
         _endOfPages = true;
         Console.WriteLine("End of page");
+        
         page = new OutroChartPage
         {
             Duration = 1.0f,
@@ -379,12 +389,18 @@ public class PlayfieldScreen : UIElementBase, IDisposable
 
     private void DrawScanlinePrivate(NvgContext ctx, float w, float y)
     {
-        var duration = _chart?.TotalDuration ?? 0;
+        var duration = GetChartDuration();
+        var end = duration + 1;
         var halfW = w * 0.5f;
+
+        var time = _currentTime ?? 0;
         
-        var time = (_currentTime ?? 0)
-            .LinearFadeEdge(-1, 0, duration, duration + 1); 
-        var scale = (time).Clamp(0, 1);
+        var visibility = time.LinearFadeEdge(-1, 0, duration, end);
+        _scanlineVisible = visibility > 0;
+        if(!_scanlineVisible)
+            return;
+        
+        var scale = visibility.Clamp(0, 1);
 
         using var _ = ctx.PushPostTransform(
             Matrix3x2.CreateScale((float)scale, 1)*
@@ -402,29 +418,9 @@ public class PlayfieldScreen : UIElementBase, IDisposable
         // TODO release managed resources here
     }
     
-    /*
-     *
-             var isNotIntro = 1;
-
-        switch (page)
-        {
-            case IntroChartPage:
-                //x = _scanlineY ?? 0;
-                isNotIntro = 0;
-                break;
-
-            case OutroChartPage:
-                //x = 1f - _scanlineY ?? 1;
-                break;
-
-            case not null:
-                //x = 1f;
-                break;
-        }
-     */
     public void Seek(int amount)
     {
-        _time = (_time + amount).Clamp(0, _chart?.TotalDuration ?? 0);
+        _time = (_time + amount).Clamp(0, GetChartDuration());
         NextPage = null;
         CurrentPage = null;
     }
