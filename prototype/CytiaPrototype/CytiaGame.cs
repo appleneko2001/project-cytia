@@ -85,12 +85,12 @@ public class CytiaGame : IDisposable
 
     public void PressLeft()
     {
-        _playfieldScreen?.CurrentAttempt?.Seek(-3);
+        //_playfieldScreen?.CurrentAttempt?.Seek(-3);
     }
 
     public void PressRight()
     {
-        _playfieldScreen?.CurrentAttempt?.Seek(3);
+        //_playfieldScreen?.CurrentAttempt?.Seek(3);
     }
 
     public void NewAttempt()

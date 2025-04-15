@@ -6,15 +6,14 @@ namespace CytiaPrototype.Screens.Playfield;
 
 public class PlayAreaAttempt
 {
-    private ChartBase _chart;
-    private double _currentTime = -1;
-    private bool _started;
+    private readonly ChartBase _chart;
+    private double _currentTime = -IntroFadeInDuration;
     private bool _introPushed;
     private bool _endOfPages;
 
     private bool _upperLineTrigger, _lowerLineTrigger;
     
-    private const int _introFadeInDuration = 1;
+    private const int IntroFadeInDuration = 1;
     
     private ChartPage? _currentPage;
 
@@ -34,11 +33,11 @@ public class PlayAreaAttempt
     
     internal double GetChartDuration()
     {
-        //return _chart?.TotalDuration ?? 0;
-        return _chart?.TrimmedDuration ?? 0;
+        //return _chart.TotalDuration;
+        return _chart.TrimmedDuration;
     }
 
-    public double CurrentPageProgress => _scanlineY ?? 0;
+    public double CurrentPageProgress => _scanlineY ?? -1;
 
     public ChartPage? NextPage { get; set; }
 
@@ -119,8 +118,8 @@ public class PlayAreaAttempt
 
                 page = new IntroChartPage
                 {
-                    Duration = _introFadeInDuration,
-                    Since = -_introFadeInDuration,
+                    Duration = IntroFadeInDuration,
+                    Since = -IntroFadeInDuration,
                     Direction = peek?.Direction ?? PageDirection.Down,
                     Height = 0,
                     Number = 0
@@ -183,11 +182,7 @@ public class PlayAreaAttempt
         TryDoSessionStateUpdate(CurrentTime);
     }
 
-    internal void Draw()
-    {
-        
-    }
-
+    /*
     public void Seek(int amount)
     {
         return;
@@ -196,5 +191,5 @@ public class PlayAreaAttempt
             .Clamp(0, GetChartDuration());
         NextPage = null;
         CurrentPage = null;
-    }
+    }*/
 }
