@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype", "CytiaPrototype\CytiaPrototype.csproj", "{0E391A08-00E5-42A6-B286-F67D80A52B43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Launcher", "CytiaPrototype.Launcher\CytiaPrototype.Launcher.csproj", "{21738A46-E633-467F-92B7-2582C64796C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Assets", "CytiaPrototype.Assets\CytiaPrototype.Assets.csproj", "{3371291F-5269-4BB5-A807-EBD743EED965}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Tests", "CytiaPrototype.Tests\CytiaPrototype.Tests.csproj", "{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E391A08-00E5-42A6-B286-F67D80A52B43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E391A08-00E5-42A6-B286-F67D80A52B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E391A08-00E5-42A6-B286-F67D80A52B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E391A08-00E5-42A6-B286-F67D80A52B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21738A46-E633-467F-92B7-2582C64796C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21738A46-E633-467F-92B7-2582C64796C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21738A46-E633-467F-92B7-2582C64796C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21738A46-E633-467F-92B7-2582C64796C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3371291F-5269-4BB5-A807-EBD743EED965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3371291F-5269-4BB5-A807-EBD743EED965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3371291F-5269-4BB5-A807-EBD743EED965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3371291F-5269-4BB5-A807-EBD743EED965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
