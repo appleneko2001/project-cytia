@@ -13,4 +13,6 @@ public class ChartNote
     public double Duration { get; set; }
     
     public long NextId { get; set; }
+
+    public double End => Time + Duration;
 }

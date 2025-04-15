@@ -8,7 +8,7 @@ public class ScrollCellsLine : UIElementBase
 {
     public float ScaleUpAmount = 1.5f;
     public float Thickness = 16;
-    public bool IsUpperLine = false;
+    public bool Reverse;
     private float _offset;
     private float _scaleY;
     
@@ -16,7 +16,7 @@ public class ScrollCellsLine : UIElementBase
 
     private double time;
 
-    public void Update(double runTime, double deltaTime)
+    public void Update(double deltaTime)
     {
         if (time > lineSpacing)
             time -= lineSpacing;
@@ -58,7 +58,7 @@ public class ScrollCellsLine : UIElementBase
             ctx.Fill();
         }
 
-        if (IsUpperLine)
+        if (Reverse)
         {
             // Upper vertical scroll cells that goes to right direction
             for (var x = vSize.X; ; x -= lineSpacing)

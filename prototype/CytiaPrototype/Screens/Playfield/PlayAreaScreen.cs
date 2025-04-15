@@ -11,13 +11,10 @@ namespace CytiaPrototype.Screens.Playfield;
 
 public class PlayAreaScreen : UIElementBase, IDisposable
 {
-    private double _time;
+    //private double _time;
 
     // Play area vertical margin
     const float margin = 120f;
-
-    // Play area view size
-
 
     // Inner play area height 
     private float _playfieldViewHeight;
@@ -32,83 +29,29 @@ public class PlayAreaScreen : UIElementBase, IDisposable
     private float _userPreferenceScaleAmount = 0.6f;
 
     // Play state
-    private ChartBase? _chart;
-    private double? _chartPlayStartTimeSpan;
-    private double? _currentTime;
-    private bool _started;
-    private bool _introPushed;
-    private bool _endOfPages;
     private bool _scanlineVisible;
-
-    private ChartPage? _currentPage;
-
-    // Progress number
-    private float? _scanlineY;
+    private PlayAreaAttempt? _currentAttempt;
+    private ChartBase _loadSource;
 
     // Play area decorations
-    private ScrollCellsLine _upperLine = new()
-    {
-        IsUpperLine = true
-    };
+    private ScrollCellsLine _upperLine = new() { Reverse = true };
 
-    private ScrollCellsLine _lowerLine = new()
-    {
-        IsUpperLine = false
-    };
+    private ScrollCellsLine _lowerLine = new() { Reverse = false };
 
     private ChartProgress _progress = new()
     {
         Height = 8.0
     };
 
-    private ChartPage? CurrentPage
-    {
-        get => _currentPage;
-        set
-        {
-            var cur = value;
-            var old = _currentPage;
-            _currentPage = cur;
+    private AttemptCounter _attemptCounter = new();
 
-            do
-            {
-                if (old == null)
-                    break;
-                
-                if(!_scanlineVisible)
-                    break;
-
-                switch (old.Direction)
-                {
-                    case PageDirection.Up:
-                        // Scale up upper scroll line
-                        _upperLine.ScaleUp();
-                        break;
-
-                    case PageDirection.Down:
-                        // Scale up lower scroll line
-                        _lowerLine.ScaleUp();
-                        break;
-                }
-            } while (false);
-
-            do
-            {
-                if (cur == null)
-                    return;
-
-                Console.WriteLine($"Current Page#{cur.Number} {cur}");
-            } while (false);
-        }
-    }
-
-    internal ChartPage? NextPage { get; set; }
+    internal PlayAreaAttempt? CurrentAttempt => _currentAttempt;
 
     protected override void UpdateViewSizePrivate(float w, float h)
     {
-        _upperLine?.UpdateViewSize(w, h);
-        _lowerLine?.UpdateViewSize(w, h);
-        _progress?.UpdateViewSize(w, h);
+        _upperLine.UpdateViewSize(w, h);
+        _lowerLine.UpdateViewSize(w, h);
+        _progress.UpdateViewSize(w, h);
 
         _playfieldViewHeight = h - margin - margin;
         _scaleElementAmount = h / _playfieldHeight;
@@ -116,134 +59,45 @@ public class PlayAreaScreen : UIElementBase, IDisposable
 
     public void Update(double runTime, double deltaTime)
     {
-        _time += deltaTime;
+        _upperLine.Update(deltaTime);
+        _lowerLine.Update(deltaTime);
+        _attemptCounter.Update(deltaTime);
 
-        _upperLine.Update(runTime, deltaTime);
-        _lowerLine.Update(runTime, deltaTime);
+        var attempt = CurrentAttempt;
 
-        TryActivePlaySession(runTime);
-        TryDoSessionStateUpdate(_time);
-    }
-
-
-    private const int _introFadeInDuration = 1;
-    
-    
-
-    private void TryActivePlaySession(double runTime)
-    {
-        if (!_chartPlayStartTimeSpan.HasValue || runTime < _chartPlayStartTimeSpan - _introFadeInDuration)
+        if (attempt == null)
             return;
-
-        if (!_started)
-        {
-            //_progress.SetStart(_chartPlayStartTimeSpan ?? 0);
-            _progress.SetDuration(GetChartDuration());
-
-            _started = true;
-            Console.WriteLine("Intro");
-        }
-    }
-
-    private double GetChartDuration()
-    {
-        return _chart?.TotalDuration ?? 0;
-        return _chart?.TrimmedDuration ?? 0;
-    }
-
-    private void TryDoSessionStateUpdate(double srcTime)
-    {
-        var chart = _chart;
-
-        if (chart == null)
-            return;
-
-        if (!_started)
-            return;
-
-        var since = _chartPlayStartTimeSpan ?? throw new InvalidOperationException();
-
-        var time = Math.Max(srcTime - since, -1);
-        _progress.Update(time);
-        _currentTime = time;
-
-        var curPage = CurrentPage;
-        _scanlineY = curPage?.TryGetScanline(time);
-
-        if (NextPage == null)
-        {
-            ChartPage? page = null;
-
-            if (!_introPushed)
-            {
-                _introPushed = true;
-
-                if (!chart.TryPeekNextPage(time, out var peek))
-                {
-                    throw new InvalidOperationException();
-                }
-
-                page = new IntroChartPage
-                {
-                    Duration = _introFadeInDuration,
-                    Since = -_introFadeInDuration,
-                    Direction = peek?.Direction ?? PageDirection.Down,
-                    Height = 0,
-                    Number = 0
-                };
-            }
-
-            if (page == null)
-            {
-                TryGetNextPagePrivate(chart, time, curPage, out page);
-            }
-
-            NextPage = page;
-        }
-
-        if (curPage?.IsCompleted(time) ?? false)
-            CurrentPage = null;
-
-        if (CurrentPage == null)
-        {
-            CurrentPage = NextPage;
-            NextPage = null;
-        }
-    }
-
-    private void TryGetNextPagePrivate(ChartBase chart, double time, ChartPage? curPage, out ChartPage? page)
-    {
-        //Console.WriteLine($"Query next page at {TimeSpan.FromSeconds(time)}");
-        if (chart.TryGetNextPage(time, out page))
-        {
-            _endOfPages = false;
-            Console.WriteLine($"Returned: {page}");
-            return;
-        }
-        if (_endOfPages)
-            return;
-
-        _endOfPages = true;
-        Console.WriteLine("End of page");
         
-        page = new OutroChartPage
-        {
-            Duration = 1.0f,
-            Height = 0f,
-            Number = ulong.MaxValue,
-            Direction = curPage?.Direction.Reverse() ?? PageDirection.Idle,
-            Since = curPage?.End ?? 0
-        };
+        attempt.Update(deltaTime);
+        _progress.Update(attempt.CurrentTime);
+        
+        if(attempt.GetUpperScrollLineTrigger())
+            _upperLine.ScaleUp();
+        
+        if (attempt.GetLowerScrollLineTrigger())
+            _lowerLine.ScaleUp();
     }
 
     public void UseChart(ChartBase chart)
     {
         // Intro
-        _chart = chart;
-        var whenStart = _time + 3;
+        _loadSource = chart;
+        Attempt();
 
-        _chartPlayStartTimeSpan = whenStart;
-        Console.WriteLine($"Play {chart}, begin in {TimeSpan.FromSeconds(whenStart):g}");
+        // TODO: refactor
+        Console.WriteLine($"Play {chart}, begin in {TimeSpan.FromSeconds(0):g}");
+    }
+
+    internal void Attempt()
+    {
+        var attempt = new PlayAreaAttempt(_loadSource);
+        
+        _currentAttempt = attempt;
+        _progress.SetDuration(attempt.GetChartDuration());
+        
+        _attemptCounter.Increase();
+        
+        Console.WriteLine($"Play {_loadSource}, begin in {TimeSpan.FromSeconds(0):g}");
     }
 
     public void Draw(NvgContext ctx)
@@ -264,6 +118,8 @@ public class PlayAreaScreen : UIElementBase, IDisposable
 
         // Chart progress bar (upper)
         _progress.Draw(ctx);
+
+        _attemptCounter.Draw(ctx);
     }
 
     private void DrawPlayAreaPrivate(NvgContext ctx)
@@ -271,10 +127,10 @@ public class PlayAreaScreen : UIElementBase, IDisposable
         var vSize = ViewSize;
         var h = _playfieldViewHeight;
 
-        var page = CurrentPage;
+        var page = _currentAttempt?.CurrentPage;
         var dir = page?.Direction;
         var intensity = page is not IntroChartPage ? 1.0f:0.0f; 
-        var y = (_scanlineY % 1.0f)  * intensity;
+        var y = (_currentAttempt?.CurrentPageProgress % 1.0f)  * intensity;
 
         if (y.HasValue == false)
             return;
@@ -299,7 +155,7 @@ public class PlayAreaScreen : UIElementBase, IDisposable
         ctx.Rect(0,0, vSize.X, h);
         ctx.Stroke();
 #endif
-        var notesTable = _chart?.Notes;
+        var notesTable = CurrentAttempt?.GetChartNotes();
 
         // Draw current page notes
         ctx.Save();
@@ -310,7 +166,7 @@ public class PlayAreaScreen : UIElementBase, IDisposable
             if (note == null)
                 continue;
 
-            DrawNotePrivate(ctx, vSize with { Y = h }, note, notesTable!);
+            DrawNotePrivate(ctx, vSize with { Y = h }, dir.Value, note, notesTable!);
         }
         ctx.Restore();
         
@@ -318,14 +174,18 @@ public class PlayAreaScreen : UIElementBase, IDisposable
         DrawScanlinePrivate(ctx, vSize.X, v);
     }
 
-    private void DrawNotePrivate(NvgContext ctx, Vector2 vSize, ChartNote note, IReadOnlyDictionary<long, ChartNote> notes)
+    private void DrawNotePrivate(NvgContext ctx, Vector2 vSize, PageDirection dir, ChartNote note,
+        IReadOnlyDictionary<long, ChartNote> notes)
     {
-        const double min = -0.25, max = 1.0;
+        const double min = -0.25, end = 0.5, max = 1.0;
 
-        var time = (_currentTime ?? 0) - note.Time;
+        var time = (_currentAttempt?.CurrentTime ?? 0) - note.Time;
         var remains = Math.Abs(time);
         
-        if (time < min || remains > max)
+        var fEnd = note.Duration + end;
+        var fMax = note.Duration + max;
+        
+        if (time < min || remains > fMax)
             return;
         
         float GetX(double abs) => (float)(vSize.X * abs);
@@ -348,7 +208,7 @@ public class PlayAreaScreen : UIElementBase, IDisposable
         };
         var scale = _scaleElementAmount * _userPreferenceScaleAmount;
 
-        ctx.GlobalAlpha((float)time.LinearFadeEdge(min, 0, 0.5, max).Clamp(0, 1));
+        ctx.GlobalAlpha((float)time.LinearFadeEdge(min, 0, fEnd, fMax).Clamp(0, 1));
         var nextNoteId = note.NextId;
 
         if (nextNoteId >= 0)
@@ -372,6 +232,23 @@ public class PlayAreaScreen : UIElementBase, IDisposable
             }
         }
 
+        switch (note.Kind)
+        {
+            case ChartNoteKind.Hold:
+            case ChartNoteKind.LongHold:
+                var a = note.Vertical;
+                var b = note.Vertical - note.Duration;
+
+                ctx.BeginPath();
+                ctx.StrokeColor(colour);
+                ctx.StrokeWidth(48 * scale);
+                ctx.MoveTo(GetX(note.Horizontal), GetY(a));
+                ctx.LineTo(GetX(note.Horizontal), GetY(b));
+                ctx.Stroke();
+                //note.Duration;
+                break;
+        }
+
         using (ctx.PushPostTransform(Matrix3x2.CreateTranslation(
                    GetX(note.Horizontal), 
                    GetY(note.Vertical))))
@@ -387,13 +264,13 @@ public class PlayAreaScreen : UIElementBase, IDisposable
         }
     }
 
-    private void DrawScanlinePrivate(NvgContext ctx, float w, float y)
+    private void DrawScanlinePrivate(NvgContext ctx, float w, double y)
     {
-        var duration = GetChartDuration();
+        var duration = _currentAttempt?.GetChartDuration() ?? 0;
         var end = duration + 1;
         var halfW = w * 0.5f;
 
-        var time = _currentTime ?? 0;
+        var time = _currentAttempt?.CurrentTime ?? 0;
         
         var visibility = time.LinearFadeEdge(-1, 0, duration, end);
         _scanlineVisible = visibility > 0;
@@ -404,7 +281,7 @@ public class PlayAreaScreen : UIElementBase, IDisposable
 
         using var _ = ctx.PushPostTransform(
             Matrix3x2.CreateScale((float)scale, 1)*
-            Matrix3x2.CreateTranslation(halfW, y) 
+            Matrix3x2.CreateTranslation(halfW, (float)y) 
         );
         ctx.BeginPath();
 
@@ -418,10 +295,5 @@ public class PlayAreaScreen : UIElementBase, IDisposable
         // TODO release managed resources here
     }
     
-    public void Seek(int amount)
-    {
-        _time = (_time + amount).Clamp(0, GetChartDuration());
-        NextPage = null;
-        CurrentPage = null;
-    }
+
 }

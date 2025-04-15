@@ -124,6 +124,10 @@ class Program
             case Keys.Right:
                 game.PressRight();
                 break;
+            
+            case Keys.R:
+                game.NewAttempt();
+                break;
         }
     }
 
