@@ -238,17 +238,15 @@ public class PlayfieldScreen : UIElementBase, IDisposable
 
     public void Draw(NvgContext ctx)
     {
-        bool isOutro = CurrentPage is OutroChartPage;
-
         var h = ViewSize.Y;
 
         // upper scroll cell line
         using (ctx.PushPostTransform(Matrix3x2.CreateTranslation(0, margin)))
-            _upperLine.Draw(ctx, isOutro);
+            _upperLine.Draw(ctx);
 
         // lower scroll cell line
         using (ctx.PushPostTransform(Matrix3x2.CreateTranslation(0, h - margin)))
-            _lowerLine.Draw(ctx, isOutro);
+            _lowerLine.Draw(ctx);
 
         // Play area and scanline
         using (ctx.PushPostTransform(Matrix3x2.CreateTranslation(0, margin)))

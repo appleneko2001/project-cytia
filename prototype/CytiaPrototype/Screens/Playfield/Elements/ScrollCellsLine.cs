@@ -34,7 +34,7 @@ public class ScrollCellsLine : UIElementBase
         _scaleY = ScaleUpAmount;
     }
 
-    public void Draw(NvgContext ctx, bool isOutro)
+    public void Draw(NvgContext ctx)
     {
         var vSize = ViewSize;
         var halfH = (Thickness * _scaleY) * 0.5f;
