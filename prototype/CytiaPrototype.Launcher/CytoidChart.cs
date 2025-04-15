@@ -11,7 +11,7 @@ public class CytoidChart : ChartBase
     private Queue<ChartPage> _pageQueues;
 
     // TODO: _lastNoteEnd
-    private double _totalDuration, _lastNoteEnd;
+    private double _totalDuration, _lastNoteEndDuration;
     
     public CytoidChart()
     {
@@ -98,6 +98,9 @@ public class CytoidChart : ChartBase
                         Duration = ToSecond(peek.HoldTicks),
                         NextId = peek.NextNoteId
                     };
+
+                    // TODO: more precise and correct duration calculation
+                    _lastNoteEndDuration = Math.Max(_lastNoteEndDuration, note.Time + note.Duration);
                     
                     chartPage.AddNote(note);
                     AddNoteInternal(peek.Id, note);
@@ -116,6 +119,7 @@ public class CytoidChart : ChartBase
     protected override string Name => "Cytoid Json Chart";
     protected override string VariantName => "N/A";
     public override double TotalDuration => _totalDuration;
+    public override double TrimmedDuration => _lastNoteEndDuration;
 
     private KeyValuePair<double, ulong>? _prevPagePull;
 

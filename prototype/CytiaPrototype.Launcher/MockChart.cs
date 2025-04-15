@@ -8,6 +8,7 @@ public class MockChart : ChartBase
     protected override string Name => "Demo";
     protected override string VariantName => "None";
     public override double TotalDuration => throw new NotImplementedException();
+    public override double TrimmedDuration => throw new NotImplementedException();
 
     private double DurationPerPage = 1.0;
     private double _nextPageAt;
