@@ -13,9 +13,9 @@
 
     <ItemGroup>
       <None Remove="assets\**\*" />
-      <AdditionalFiles Include="assets\**\*">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </AdditionalFiles>
+      <EmbeddedResource Include="assets\**\*">
+        <LogicalName>$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>

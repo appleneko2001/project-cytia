@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CytiaPrototype.Assets\CytiaPrototype.Assets.csproj" />
+      <ProjectReference Include="..\CytiaPrototype.Levels.Cytoid\CytiaPrototype.Levels.Cytoid.csproj" />
       <ProjectReference Include="..\CytiaPrototype\CytiaPrototype.csproj" />
     </ItemGroup>
 
@@ -22,6 +22,10 @@
       <AdditionalFiles Include="maguro_sabakimasu_easy.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AdditionalFiles>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>

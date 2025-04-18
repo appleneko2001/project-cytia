@@ -1,8 +1,11 @@
-using CytiaPrototype.Launcher.Models;
-using CytiaPrototype.Levels;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CytiaPrototype.Levels.Elements;
 
-namespace CytiaPrototype.Launcher;
+namespace CytiaPrototype.Levels.Cytoid;
 
 public class CytoidChart : ChartBase
 {
@@ -18,13 +21,13 @@ public class CytoidChart : ChartBase
 
     }
 
-    internal async Task LoadAsync(CytoidLevelChartModel model)
+    public async Task LoadAsync(CytoidLevelChartModel model)
     {
         var timeBase = model.TimeBase;
 
         var pages = new List<ChartPage>();
 
-        var sourceNotes = new Queue<CytoidLevelChartModel.Note>(model.Notes
+        var sourceNotes = new ConcurrentQueue<CytoidLevelChartModel.Note>(model.Notes
             .OrderBy(a => a.Tick));
         var notes = new Dictionary<long, ChartNote>();
         
@@ -65,7 +68,7 @@ public class CytoidChart : ChartBase
                     if(peek != null && peek.Tick >= page.End)
                         break;
 
-                    sourceNotes.Dequeue();
+                    sourceNotes.TryDequeue(out _);
 
                     var tick = peek!.Tick;
                     var y = tick - page.Start;

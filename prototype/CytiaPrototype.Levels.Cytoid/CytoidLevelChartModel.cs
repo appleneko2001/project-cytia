@@ -1,6 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CytiaPrototype.Launcher.Models;
+namespace CytiaPrototype.Levels.Cytoid;
 
 // https://github.com/Cytoid/wiki/blob/main/docs/zh/reference/chart/c2-format.md
 [Serializable]

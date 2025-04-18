@@ -12,4 +12,12 @@
       <PackageReference Include="NanoVG.Bindings" Version="0.9.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\CytiaPrototype.Assets\CytiaPrototype.Assets.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="IO\" />
+    </ItemGroup>
+
 </Project>

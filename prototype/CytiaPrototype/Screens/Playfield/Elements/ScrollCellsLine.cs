@@ -38,7 +38,7 @@ public class ScrollCellsLine : UIElementBase
     {
         var vSize = ViewSize;
         var halfH = (Thickness * _scaleY) * 0.5f;
-        var rX = halfH * 2f;
+        var rX = halfH;
 
 
         const float cellWidth = 4f;

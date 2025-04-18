@@ -7,10 +7,9 @@ using NanoVG.Extensions;
 
 namespace CytiaPrototype;
 
-public class PerfCounter
+public class PerfCounter : UIElementBase
 {
     private string _updateCounter = "", _renderCounter = "";
-    private int viewW = 0, viewH = 0;
     private Font? _font;
     private float[] _textBounds = new float[4];
     
@@ -32,6 +31,8 @@ public class PerfCounter
         
         if(font == null)
             return;
+
+        var v = ViewSize;
         
         ctx.FontSize(16.0f);
         font.Use(ctx);
@@ -41,8 +42,8 @@ public class PerfCounter
         
         ctx.BeginPath();
         ctx.RoundedRect(
-            viewW + _textBounds[0], 
-            viewH + _textBounds[1],
+            v.X + _textBounds[0], 
+            v.Y + _textBounds[1],
             _textBounds[2] - _textBounds[0], 
             _textBounds[3] - _textBounds[1], 4.0f);
         ctx.FillColor(Color.DarkOrange.ToVec4());
@@ -50,16 +51,14 @@ public class PerfCounter
         
         ctx.FillColor(Color.Black.ToVec4());
         ctx.FontBlur(1);
-        ctx.Text(viewW-4, viewH-2, _renderCounter);
+        ctx.Text(v.X-4, v.Y-2, _renderCounter);
         
         ctx.FillColor(Vector4.One);
         ctx.FontBlur(0);
-        ctx.Text(viewW-4, viewH-2, _renderCounter);
+        ctx.Text(v.X-4, v.Y-2, _renderCounter);
     }
 
-    public void UpdateViewSize(int w, int h)
+    protected override void UpdateViewSizePrivate(float w, float h)
     {
-        viewW = w;
-        viewH = h;
     }
 }

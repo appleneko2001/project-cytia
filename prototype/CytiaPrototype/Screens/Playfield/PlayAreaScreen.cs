@@ -26,7 +26,7 @@ public class PlayAreaScreen : UIElementBase, IDisposable
     // Acquired element scale amount
     private float _scaleElementAmount;
 
-    private float _userPreferenceScaleAmount = 0.6f;
+    private float _userPreferenceScaleAmount = 1.0f;
 
     // Play state
     private bool _scanlineVisible;
@@ -177,7 +177,7 @@ public class PlayAreaScreen : UIElementBase, IDisposable
     private void DrawNotePrivate(NvgContext ctx, Vector2 vSize, PageDirection dir, ChartNote note,
         IReadOnlyDictionary<long, ChartNote> notes)
     {
-        const double min = -0.25, end = 0.5, max = 1.0;
+        const double min = -0.25, end = 0, max = 0.25;
 
         var time = (_currentAttempt?.CurrentTime ?? 0) - note.Time;
         var remains = Math.Abs(time);

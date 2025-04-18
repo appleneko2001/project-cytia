@@ -10,13 +10,14 @@ public class Font : IDisposable
     private bool _isFailed;
 
     private NvgContext _ctx;
+    private GameAssets _assets;
 
-    public Font(string[] path) : this(Path.Combine(path))
+    public Font(GameAssets assets, string[] path) : this(Path.Combine(path))
     {
-        
+        _assets = assets;
     }
     
-    public Font(string path)
+    private Font(string path)
     {
         var name = Path.GetFileName(path);
         var subName = "Regular.ttf";
@@ -26,21 +27,30 @@ public class Font : IDisposable
         _name = name;
     }
 
-    public void Use(NvgContext ctx)
+    public unsafe void Use(NvgContext ctx)
     {
         if(_isFailed)
             return;
         
         if (!_resId.HasValue)
         {
-            var res = ctx.CreateFont(_name, _path);
-            if (res == -1)
+            using var mem = new MemoryStream();
+            using (var source = _assets.GetStream(_path) )
             {
-                MarkAsFailedResource();
-                return;
+                source?.CopyTo(mem);
             }
 
-            _resId = res;
+            fixed (void* ptr = mem.ToArray())
+            {
+                var res = ctx.CreateFontMem(_name, (IntPtr)ptr, (int)mem.Length, 0);
+                if (res == -1)
+                {
+                    MarkAsFailedResource();
+                    return;
+                }
+
+                _resId = res;
+            }
         }
 
         if (!_resId.HasValue)

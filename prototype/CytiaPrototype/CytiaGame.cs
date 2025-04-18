@@ -1,42 +1,50 @@
 using System.Numerics;
 using CytiaPrototype.Assets;
-using CytiaPrototype.Graphics;
 using CytiaPrototype.Levels;
 using CytiaPrototype.Screens.Playfield;
 using NanoVG;
 
 namespace CytiaPrototype;
 
-public class CytiaGame : IDisposable
+public class CytiaGame : UIElementBase, IDisposable
 {
-    private NvgContext _nvgContext;
-    private int viewW = 0, viewH = 0;
+    private NvgContext? _nvgContext;
 
     private Font _systemFont;
     
     private PerfCounter _perfCounter = new ();
     private PlayAreaScreen? _playfieldScreen;
+
+    private GameAssets _embeddedAssets = new();
     
-    public CytiaGame()
+    private NvgContext DrawingContext => _nvgContext ??= NvgInitPrivate();
+
+    private NvgContext NvgInitPrivate()
     {
-        var nvgContextFlags = NvgCreateFlags.Antialias | NvgCreateFlags.StencilStrokes | NvgCreateFlags.Debug;
+        var nvgContextFlags = NvgCreateFlags.Antialias |
+                              NvgCreateFlags.StencilStrokes
+                              |
+                              NvgCreateFlags.Debug
+            ;
         var ctx = Nvg.CreateGLES3(nvgContextFlags) ?? throw new InvalidOperationException();
 
         if (ctx.Handle == IntPtr.Zero)
             throw new InvalidOperationException("Unable to initialise graphics");
         
-        _nvgContext = ctx;
+        return ctx;
     }
-    
+
     public void Dispose()
     {
         // TODO release managed resources here
-        Nvg.DeleteGLES3(_nvgContext);
+        Nvg.DeleteGLES3(DrawingContext);
     }
 
     public void Init()
     {
-        _systemFont = new Font(["assets","fonts","system"]);
+        Console.WriteLine(DrawingContext);
+        
+        _systemFont = new Font(_embeddedAssets, ["assets","fonts","system"]);
         _perfCounter.Init(_systemFont);
     }
 
@@ -48,17 +56,14 @@ public class CytiaGame : IDisposable
     {
         var screen = new PlayAreaScreen();
 
-        screen.UpdateViewSize(viewW, viewH);
+        screen.UpdateViewSize(ViewSize);
         screen.UseChart(chart);
         
         _playfieldScreen = screen;
     }
 
-    public void UpdateViewSize(int w, int h)
+    protected override void UpdateViewSizePrivate(float w, float h)
     {
-        viewW = w;
-        viewH = h;
-
         _playfieldScreen?.UpdateViewSize(w, h);
 
         _perfCounter.UpdateViewSize(w, h);
@@ -73,8 +78,8 @@ public class CytiaGame : IDisposable
 
     public void Draw(double runTime, double deltaTime)
     {
-        var ctx = _nvgContext;
-        ctx.BeginFrame(viewW, viewH, 1.0f);
+        var ctx = DrawingContext;
+        ctx.BeginFrame(ViewSize.X, ViewSize.Y, 2.0f);
 
         _playfieldScreen?.Draw(ctx);
 

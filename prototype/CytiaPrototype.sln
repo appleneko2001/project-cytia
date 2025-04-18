@@ -1,12 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype", "CytiaPrototype\CytiaPrototype.csproj", "{0E391A08-00E5-42A6-B286-F67D80A52B43}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.35826.109
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CytiaPrototype", "CytiaPrototype\CytiaPrototype.csproj", "{0E391A08-00E5-42A6-B286-F67D80A52B43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Launcher", "CytiaPrototype.Launcher\CytiaPrototype.Launcher.csproj", "{21738A46-E633-467F-92B7-2582C64796C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CytiaPrototype.Launcher", "CytiaPrototype.Launcher\CytiaPrototype.Launcher.csproj", "{21738A46-E633-467F-92B7-2582C64796C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Assets", "CytiaPrototype.Assets\CytiaPrototype.Assets.csproj", "{3371291F-5269-4BB5-A807-EBD743EED965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CytiaPrototype.Assets", "CytiaPrototype.Assets\CytiaPrototype.Assets.csproj", "{3371291F-5269-4BB5-A807-EBD743EED965}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Tests", "CytiaPrototype.Tests\CytiaPrototype.Tests.csproj", "{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Android", "CytiaPrototype.Android\CytiaPrototype.Android.csproj", "{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CytiaPrototype.Levels.Cytoid", "CytiaPrototype.Levels.Cytoid\CytiaPrototype.Levels.Cytoid.csproj", "{BF24350E-2EA9-4D19-9D7C-243B33CE254E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +37,21 @@ Global
 		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E853378-7FB2-4FAB-A9D5-EABAB432CBD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BF24350E-2EA9-4D19-9D7C-243B33CE254E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF24350E-2EA9-4D19-9D7C-243B33CE254E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF24350E-2EA9-4D19-9D7C-243B33CE254E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF24350E-2EA9-4D19-9D7C-243B33CE254E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A12731B-C859-4B22-A987-2134BE7FFCB8}
 	EndGlobalSection
 EndGlobal
