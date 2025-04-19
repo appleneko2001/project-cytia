@@ -4,7 +4,7 @@ this prototype stands implementation attempt, the refactor to C/C++ will be requ
 
 ## Requirements
 ### Hardware
-+ OpenGL ES 2.0 minimum, 3.1 is recommended. Allowed to use ANGLE library to translate API to other API like Vulkan or whatever.
++ OpenGL ES ~~2.0 minimum~~(NanoVG needs get fixed first, so far only GLES3 backend), 3.1 is recommended. Allowed to use ANGLE library to translate API to other API like Vulkan or whatever.
 > Not measured the hardware usage yet, cannot confirm how much RAM usage after all but so far it not more than 500MiB or even 100MiB
 
 ### Software
